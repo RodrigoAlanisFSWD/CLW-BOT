@@ -25,12 +25,14 @@ class CartService {
 
         const productIndex = cart.products.findIndex((p) => p.id === product.id)
 
+        console.log(product)
+
         if (productIndex != -1) {
-            cart.products[productIndex].count += count
+            cart.products[productIndex].count = parseInt(cart.products[productIndex].count) + count
         } else {
             cart.products.push({
                 ...product,
-                count: count
+                count: parseInt(count)
             })
         }
 

@@ -1,26 +1,9 @@
 import cartController from "../controllers/cartController.js";
+import helpController from "../controllers/helpController.js";
 import userService from "../services/userService.js";
 
 export default function cartHandler(msg, client) {
   switch (true) {
-    case /ayuda carrito/g.test(msg.body):
-      return client.sendText(
-        msg.from,
-        `
-Comandos Del Menu:
-
-Para Crear Un Carrito:
-
-carrito iniciar
-
-Para Agregar Un Producto
-
-carrito agregar NUMERO CANTIDAD
-
-El numero se refiere a el numero antes de el nombre de el producto, para mas sobre el menu escribe: ayuda menu
-`
-      );
-
     case /carrito iniciar/g.test(msg.body):
       return cartController.createUserCart(client, msg.from);
 
@@ -28,11 +11,13 @@ El numero se refiere a el numero antes de el nombre de el producto, para mas sob
       const id = msg.body.split(" ")[2]
       const count = msg.body.split(" ")[3]
 
-      return cartController.addProduct(client, msg.from, id, count)
+      return cartController.addProduct(client, msg.from, id, count ? count : 1)
+
+    case /carrito mostrar/g.test(msg.body):
+      return cartController.getProducts(client, msg.from);
 
     default:
-        return client.sendText(msg.from, 'Comandos De El Bot:').then((res) => {
-            console.log('Result: ', res)
-          }).catch(err => console.error(err))
+      return helpController.cart(client, msg)
+        break;
   }
 }
