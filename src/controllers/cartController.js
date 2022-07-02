@@ -54,15 +54,18 @@ carrito iniciar`
       );
     }
 
+    const user = userService.findUser(from) 
+
     let products = userService.findUser(from).cart.products;
 
+    if (products.length < 1) return client.sendText(from, "El Carrito Esta Vacio");
+
     products = products.map((product) => ({
-      description:
-        product.desc
-          ? product.desc
-          : menuService.getIngredientsFromProduct(product),
+      description: product.desc
+        ? product.desc
+        : menuService.getIngredientsFromProduct(product),
       title:
-        product.id +
+        (cartService.findProductIndex(product.id, user) + 1) +
         " - " +
         product.name +
         " $" +
@@ -73,7 +76,7 @@ carrito iniciar`
 
     const menu = [
       {
-        title: 'Carrito',
+        title: "Carrito",
         rows: products,
       },
     ];
@@ -91,9 +94,21 @@ carrito iniciar`
       .catch((err) => console.error(err));
   }
 
-  async deleteCart() {}
+  async deleteCart(client, from) {
+    if (userService.existUser(from)) {
+      await userService.deleteUser(from);
+    }
 
-  async deleteProduct() {}
+    return client.sendText(from, "Carrito Eliminado");
+  }
+
+  async deleteProduct(client, from, id) {
+    const user = userService.findUser(from);
+
+    cartService.deleteProduct(user, id);
+
+    return client.sendText(from, `Producto ${id} Eliminado Del Carrito`);
+  }
 }
 
 export default new CartController();

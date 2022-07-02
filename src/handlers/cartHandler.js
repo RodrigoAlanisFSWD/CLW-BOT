@@ -1,6 +1,5 @@
 import cartController from "../controllers/cartController.js";
 import helpController from "../controllers/helpController.js";
-import userService from "../services/userService.js";
 
 export default function cartHandler(msg, client) {
   switch (true) {
@@ -15,6 +14,12 @@ export default function cartHandler(msg, client) {
 
     case /carrito mostrar/g.test(msg.body):
       return cartController.getProducts(client, msg.from);
+
+    case /carrito eliminar \w+/g.test(msg.body):
+      return cartController.deleteProduct(client, msg.from, msg.body.split(" ")[2])
+
+    case /carrito borrar/g.test(msg.body):
+      return cartController.deleteCart(client, msg.from)
 
     default:
       return helpController.cart(client, msg)
