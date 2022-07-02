@@ -14,8 +14,8 @@ class MenuService {
     });
 
     products = products.map((product) => ({
-      description: product.desc,
-      title: product.id + " - " + product.name + " $" + products.price,
+      description: product.desc.length > 1 ? product.desc : this.getIngredientsFromProduct(product),
+      title: product.id + " - " + product.name + " $" + product.price,
     }));
 
     return products;
@@ -26,7 +26,7 @@ class MenuService {
       data: { product },
     } = await api({
       method: "GET",
-      url: "/product/get/" + id,
+      url: "/products/get/" + id,
     });
 
     return product;
@@ -50,6 +50,10 @@ class MenuService {
     }));
 
     return ingredients;
+  }
+
+  getIngredientsFromProduct(product) {
+    return product.ingredients.reduce((acc, cur) => acc += cur.name + " ", "")
   }
 }
 
