@@ -2,63 +2,64 @@ import { getConnection } from "../db.js";
 import userService from "../services/userService.js";
 import cartService from "../services/cartService.js";
 import menuService from "../services/menuService.js";
+import wsb from "whatsapp-web.js";
+
+const { List } = wsb
 
 class CartController {
-  async createUserCart(client, from) {
+  async createUserCart(client, msg) {
     const db = getConnection();
 
-    if (userService.existUser(from)) {
-      await userService.deleteUser(from);
+    if (userService.existUser(msg.from)) {
+      await userService.deleteUser(msg.from);
     }
 
-    await userService.createUser(from);
+    await userService.createUser(msg.from);
 
-    const user = userService.findUser(from);
+    const user = userService.findUser(msg.from);
 
     await cartService.createUserCart(user);
 
-    return client.sendText(from, "Carrito Creado");
+    return client.sendMessage(msg.from, "Carrito Creado");
   }
 
-  async addProduct(client, from, id, count) {
+  async addProduct(client, msg, id, count) {
     try {
-      if (!userService.existUser(from)) {
-        return client.sendText(
+      if (!userService.existUser(msg.from)) {
+        return client.sendMessage(
           from,
           `Antes Crea Un Carrito Escribiendo:
     carrito iniciar`
         );
       }
 
-      const db = getConnection();
-
       const product = await menuService.getProduct(id);
 
-      const user = userService.findUser(from);
+      const user = userService.findUser(msg.from);
 
       cartService.addProduct(user, product, count);
 
-      return client.sendText(from, `Producto ${id} Agregado Al Carrito`);
+      return client.sendMessage(msg.from, `Producto ${id} Agregado Al Carrito`);
     } catch (error) {
       console.log(error);
-      return client.sendText(from, "A Ocurrido Un Error");
+      return client.sendMessage(msg.from, "A Ocurrido Un Error");
     }
   }
 
-  async getProducts(client, from) {
-    if (!userService.existUser(from)) {
-      return client.sendText(
+  async getProducts(client, msg) {
+    if (!userService.existUser(msg.from)) {
+      return client.sendMessage(
         from,
         `Antes Crea Un Carrito Escribiendo:
 carrito iniciar`
       );
     }
 
-    const user = userService.findUser(from) 
+    const user = userService.findUser(msg.from) 
 
-    let products = userService.findUser(from).cart.products;
+    let products = userService.findUser(msg.from).cart.products;
 
-    if (products.length < 1) return client.sendText(from, "El Carrito Esta Vacio");
+    if (products.length < 1) return client.sendMessage(msg.from, "El Carrito Esta Vacio");
 
     products = products.map((product) => ({
       description: product.desc
@@ -81,33 +82,25 @@ carrito iniciar`
       },
     ];
 
-    client
-      .sendListMenu(
-        from,
-        "Carrito",
-        "subTitle",
-        "Productos Del Carrito",
-        "Productos",
-        menu
-      )
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err));
+    const list = new List('Carrito', 'Productos En El Carrito', menu, '', '')
+
+    msg.reply(list)
   }
 
-  async deleteCart(client, from) {
-    if (userService.existUser(from)) {
-      await userService.deleteUser(from);
+  async deleteCart(client, msg) {
+    if (userService.existUser(msg.from)) {
+      await userService.deleteUser(msg.from);
     }
 
-    return client.sendText(from, "Carrito Eliminado");
+    return client.sendMessage(msg.from, "Carrito Eliminado");
   }
 
-  async deleteProduct(client, from, id) {
-    const user = userService.findUser(from);
+  async deleteProduct(client, msg, id) {
+    const user = userService.findUser(msg.from);
 
     cartService.deleteProduct(user, id);
 
-    return client.sendText(from, `Producto ${id} Eliminado Del Carrito`);
+    return client.sendMessage(msg.from, `Producto ${id} Eliminado Del Carrito`);
   }
 }
 
