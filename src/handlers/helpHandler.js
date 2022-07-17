@@ -4,23 +4,30 @@ import MenuController from "../controllers/menuController.js"
 export default function helpHandler(msg, client) {
     switch(true) {
         case /ayuda menu/g.test(msg.body):
-          return helpController.menu()
+          return helpController.menu(client, msg)
 
-        case /ayuda menu/g.test(msg.body):
-          return helpController.cart()
+        case /ayuda carrito/g.test(msg.body):
+          return helpController.cart(client, msg)
+
+        case /ayuda crear/g.test(msg.body):
+            return helpController.create(client, msg)
 
         default:
-            return client.sendText(msg.from,       
+            return client.sendMessage(msg.from,
 `
 Comandos De Ayuda:
 
-Para Ayuda De Menus Escribe:
+Para Mostrar Los Comandos Del Menu Escribe:
 
 ayuda menu
 
-Para Ayuda Del Carrito Escribe:
+Para Mostrar Los Comandos Del Carrito Escribe:
 
 ayuda carrito
+
+Para Mostrar Los Comandos Para Crear Crepas/Waffles Escribe:
+
+ayuda crear
 `
                 )
           break;

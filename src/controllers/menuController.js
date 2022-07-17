@@ -1,7 +1,9 @@
+import wsb from "whatsapp-web.js";
 import MenuService from "../services/menuService.js";
+const { List } = wsb
 
 class MenuController {
-  async showMenu(type, client, from) {
+  async showMenu(type, client, msg) {
     const products = await MenuService.getProducts(type);
 
     switch (type) {
@@ -29,20 +31,12 @@ class MenuController {
       },
     ];
 
-    client
-      .sendListMenu(
-        from,
-        "Menu",
-        "subTitle",
-        "Menu De " + type,
-        "Productos",
-        menu
-      )
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err));
+    const list = new List('Menu De ' + type, 'Productos', menu, '', '')
+
+    msg.reply(list)
   }
 
-  async showIngredients(type, client, from) {
+  async showIngredients(type, client, msg) {
     const ingredients = await MenuService.getIngredients(type);
 
     switch (type) {
@@ -64,17 +58,9 @@ class MenuController {
       },
     ];
 
-    client
-      .sendListMenu(
-        from,
-        "Menu",
-        "subTitle",
-        "Ingredientes De " + type,
-        "Ingredientes",
-        menu
-      )
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err));
+    const list = new List('Ingredientes De ' + type, 'Ingredientes', menu, '', '')
+    
+    msg.reply(list)
   }
 
 }

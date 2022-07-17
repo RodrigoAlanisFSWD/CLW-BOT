@@ -55,6 +55,24 @@ class MenuService {
   getIngredientsFromProduct(product) {
     return product.ingredients.reduce((acc, cur) => acc += cur.name + " ", "")
   }
+
+  async getGivenIngredients(ids) {
+    try {
+        const { data: { ingredients } } = await api({
+          url: "/ingredients/get-many",
+          method: "POST",
+          data: {
+            ids,
+          }
+        })
+
+        console.log(ingredients)
+
+        return ingredients
+    } catch (error) {
+        return new Error("Error In GETTING DATA")
+    }
+}
 }
 
 export default new MenuService();
