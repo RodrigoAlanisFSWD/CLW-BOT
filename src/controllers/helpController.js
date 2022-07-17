@@ -37,6 +37,12 @@ Para mostrar los menus escribe:
 menu CATEGORIA
 
 Categorias: Crepas, Waffles, Bebidas, Botana, Salsas
+
+Para mostrar los ingredientes escribe:
+
+menu CATEGORIA
+
+Categorias: Crepas, Waffles
             `
             )
     }

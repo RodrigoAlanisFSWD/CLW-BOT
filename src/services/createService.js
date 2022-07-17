@@ -18,8 +18,8 @@ class CreateService {
     }
 
     ingredients.forEach((ingredient) => {
-      if (ingredient.price > 0) {
-        price += ingredient.price;
+      if (ingredient.extraPrice > 0) {
+        price += ingredient.extraPrice;
       }
     });
 
