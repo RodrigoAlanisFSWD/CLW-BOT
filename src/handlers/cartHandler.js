@@ -21,6 +21,11 @@ export default function cartHandler(msg, client) {
     case /carrito borrar/g.test(msg.body):
       return cartController.deleteCart(client, msg)
 
+    case /carrito nota \w+/g.test(msg.body):
+      const note = msg.body.split(" ").slice(2).join(" ")
+
+      return cartController.addNote(client, msg, note)
+
     default:
       return helpController.cart(client, msg)
         break;

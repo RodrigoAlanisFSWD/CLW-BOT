@@ -2,6 +2,7 @@ import cartHandler from "./cartHandler.js"
 import createHandler from "./createHandler.js"
 import helpHandler from "./helpHandler.js"
 import menuHandler from "./menuHandler.js"
+import sellHandler from "./sellHandler.js";
 
 export default function indexHandler(msg, client) {
     switch (true) {
@@ -23,6 +24,9 @@ Mediante Este Chat Podras Ordenar Tus Productos Preferidos Para Que Leguen A Tu 
 Para Ayuda Con Los Comandos Escribe:
 ayuda 
 `)
+        case /finalizar compra \w+ [\w ]+/g.test(msg.body):
+            return sellHandler(msg, client)
+
         case /^ayuda/g.test(msg.body):
             return helpHandler(msg, client)
 

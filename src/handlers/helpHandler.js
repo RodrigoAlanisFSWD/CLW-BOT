@@ -12,6 +12,9 @@ export default function helpHandler(msg, client) {
         case /ayuda crear/g.test(msg.body):
             return helpController.create(client, msg)
 
+        case /ayuda compra/g.test(msg.body):
+            return helpController.sell(client, msg)
+
         default:
             return client.sendMessage(msg.from,
 `
@@ -28,6 +31,10 @@ ayuda carrito
 Para Mostrar Los Comandos Para Crear Crepas/Waffles Escribe:
 
 ayuda crear
+
+Para Mostrar Los Comandos De Compra Escribe:
+
+ayuda compra
 `
                 )
           break;

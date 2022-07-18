@@ -102,6 +102,19 @@ carrito iniciar`
 
     return client.sendMessage(msg.from, `Producto ${id} Eliminado Del Carrito`);
   }
+
+  async addNote(client, msg, note) {
+    const db = getConnection()
+
+    const user = userService.findUser(msg.from)
+    const userIndex = userService.getUserIndex(user)
+
+    db.data.users[userIndex].cart.note = note;
+
+    await db.write()
+
+    return client.sendMessage(msg.from, 'Nota Agregada Al Carrito')
+  }
 }
 
 export default new CartController();
